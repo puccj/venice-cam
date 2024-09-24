@@ -1,8 +1,10 @@
 *test*
 *.pt
+*.pth
 data
 input
 output
+runs
 tennis_analysis-main
 padel_src
 training
