@@ -4,8 +4,6 @@ from ultralytics import YOLO
 import numpy as np
 import csv
 
-import time
-
 def save_trajectories_to_csv(trajectories, filename='trajectories.csv'):
     # Save the trajectories to a CSV file
     with open(filename, mode='w', newline='') as file:
@@ -53,7 +51,6 @@ cap = cv2.VideoCapture(video_path)
 trajectories = {}
 
 frame_count = 0
-times = []
 
 while cap.isOpened():
     ret, frame = cap.read()
@@ -62,39 +59,25 @@ while cap.isOpened():
     # if frame_count == 1000:  # Process only first 100 frames
     #     break
 
-    start_time = time.time()
 
     # Perform tracking using YOLOv8
-    # results = model.track(frame, persist=True, conf=0.5)
-    results = model.predict(frame, conf=0.5)
-
-    end_time = time.time()
-    elapsed_time = end_time - start_time
-    times.append(elapsed_time)
+    results = model.track(frame, persist=True, conf=0.5)
 
     # Iterate through the results
-    # for result in results:
-    #     for detection in result.boxes:  # Access boxes in each result
-    #         id = int(detection.id)  # Unique ID for each object being tracked
-    #         x1, y1, x2, y2 = map(int, detection.xyxy[0])  # Bounding box coordinates
-    #         center = ((x1 + x2) // 2, (y1 + y2) // 2)  # Calculate center of the object
+    for result in results:
+        for detection in result.boxes:  # Access boxes in each result
+            id = int(detection.id)  # Unique ID for each object being tracked
+            x1, y1, x2, y2 = map(int, detection.xyxy[0])  # Bounding box coordinates
+            center = ((x1 + x2) // 2, (y1 + y2) // 2)  # Calculate center of the object
 
-    #         # Store the trajectory of each object
-    #         if id not in trajectories:
-    #             trajectories[id] = []
-    #         trajectories[id].append(center)
+            # Store the trajectory of each object
+            if id not in trajectories:
+                trajectories[id] = []
+            trajectories[id].append(center)
 
     frame_count += 1
 
 cap.release()
-
-# Calculate the average processing time per frame
-average_time = np.mean(times)
-print(f"Average processing time per frame: {average_time:.5f} seconds")
-print(f"Total frames processed: {frame_count}")
-
-# Save time taken to process each frame
-np.save('times.npy', times)
 
 # Save the trajectories to a CSV file
 save_trajectories_to_csv(trajectories)
