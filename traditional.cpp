@@ -4,6 +4,9 @@
 #include <opencv4/opencv2/highgui.hpp>
 #include <random>
 
+#include <chrono>
+#include <fstream>
+
 const int FMS_BKGND = 50;
 int minArea = 5;
 int thresholdValue = 30;
@@ -156,7 +159,10 @@ int main(int argc, char *argv[]) {
   }
   cv::VideoWriter wtr(filename + "-output.avi", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), fps, cv::Size(frame.cols, frame.rows), true);
 
+  std::vector<double> times;
+
   while (true) {
+    auto start = std::chrono::high_resolution_clock::now();
     cap >> frame;
     if (frame.empty())
       break;
@@ -187,6 +193,10 @@ int main(int argc, char *argv[]) {
     //   cv::rectangle(frame, r, cv::Scalar(0, 255, 0), 2);
     // }
 
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsed = end - start;
+    times.push_back(elapsed.count());
+
     wtr << frame;
 
     if (showVideo) {
@@ -198,5 +208,20 @@ int main(int argc, char *argv[]) {
     }
   }
 
+  // save times
+  std::ofstream file("times.txt");
+  for (auto t : times) {
+    file << t << "\n";
+  }
+  file.close();
+
+  double avg = 0;
+  for (auto t : times) {
+    avg += t;
+  }
+  avg /= times.size();
+  std::cout << "Average time: " << avg << " seconds\n";
+  
+  cap.release();
   return 0;
 }

@@ -22,7 +22,7 @@ def load_trajectories_from_csv(filename='trajectories.csv'):
     loaded_trajectories = {}
 
     # Load trajectories from CSV file
-    with open('trajectories.csv', mode='r') as file:
+    with open(filename, mode='r') as file:
         reader = csv.reader(file)
         next(reader)  # Skip header
 
@@ -36,7 +36,7 @@ def load_trajectories_from_csv(filename='trajectories.csv'):
             
             loaded_trajectories[obj_id].append((x, y))
 
-    print("Trajectories loaded from 'trajectories.csv'")
+    print(f"Loaded {len(loaded_trajectories)} object trajectories from {filename}")
     return loaded_trajectories
 
 
@@ -89,8 +89,8 @@ for obj_id, trajectory in trajectories.items():
     plt.plot(trajectory[:, 0], trajectory[:, 1], label=f'Object {obj_id}')
 
 plt.title("Tracked Object Trajectories")
-plt.xlabel("X-coordinate")
-plt.ylabel("Y-coordinate")
+plt.xlabel("X-coordinate (px)", fontsize=12)
+plt.ylabel("Y-coordinate (px)", fontsize=12)
 # plt.legend()
 plt.gca().invert_yaxis()  # Invert Y-axis to match video coordinate system
 plt.show()
