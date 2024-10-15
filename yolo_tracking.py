@@ -88,9 +88,9 @@ for obj_id, trajectory in trajectories.items():
     trajectory = np.array(trajectory)
     plt.plot(trajectory[:, 0], trajectory[:, 1], label=f'Object {obj_id}')
 
-plt.title("Tracked Object Trajectories")
-plt.xlabel("X-coordinate (px)", fontsize=12)
-plt.ylabel("Y-coordinate (px)", fontsize=12)
+plt.title("Tracked Object Trajectories", fontsize=16)
+plt.xlabel("X coordinate (px)", fontsize=12)
+plt.ylabel("Y coordinate (px)", fontsize=12)
 # plt.legend()
 plt.gca().invert_yaxis()  # Invert Y-axis to match video coordinate system
 plt.show()

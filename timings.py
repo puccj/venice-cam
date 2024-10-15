@@ -102,3 +102,17 @@ print(f"Total frames processed: {frame_count}")
 
 # Save time taken to process each frame
 np.save('times.npy', times)
+
+def plot_times(filename='times.npy'):
+    import matplotlib.pyplot as plt
+
+    times = np.load(filename)
+    times = times[1:]   # Skip the first frame as it may have higher processing time
+
+    plt.plot(times)
+    plt.xlabel('Frame')
+    plt.ylabel('Processing Time (ms)')
+    plt.title('BG-subtraction algorithm computational time per frame (Rasperry)')
+    plt.show()
+
+    return np.mean(times)
